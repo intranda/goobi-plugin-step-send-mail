@@ -1,5 +1,6 @@
 package de.intranda.goobi.plugins;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,6 +39,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginReturnValue;
@@ -46,9 +48,15 @@ import org.goobi.production.enums.StepReturnValue;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
 import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
+import ugh.dl.DigitalDocument;
+import ugh.dl.Fileformat;
+import ugh.exceptions.UGHException;
 
 @PluginImplementation
 @Log4j2
@@ -58,31 +66,99 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
     private String title = "intranda_step_sendMail";
     @Getter
     private Step step;
-    @Getter
-    private String value;
-    @Getter
-    private boolean allowTaskFinishButtons;
+    private Process process;
+
     private String returnPath;
+
+    private String smtpServer;
+    private String smtpUser;
+    private String smtpPassword;
+    private boolean smtpUseStartTls;
+    private boolean smtpUseSsl;
+    private String smtpSenderAddress;
+    private List<String> recipients;
+    private String messageSubject;
+    private String messageBody;
 
     @Override
     public void initialize(Step step, String returnPath) {
         this.returnPath = returnPath;
         this.step = step;
+        process = step.getProzess();
 
         // read parameters from correct block in configuration file
         SubnodeConfiguration config = ConfigPlugins.getProjectAndStepConfig(title, step);
 
-        String smtpServer = config.getString("smtpServer", null);
-        String smtpUser = config.getString("smtpUser", null);
-        String smtpPassword = config.getString("smtpPassword", null);
-        boolean smtpUseStartTls = config.getBoolean("smtpUseStartTls", false);
-        boolean smtpUseSsl = config.getBoolean("smtpUseSsl", false);
-        String smtpSenderAddress = config.getString("smtpSenderAddress", null);
+        smtpServer = config.getString("smtpServer", null);
+        smtpUser = config.getString("smtpUser", null);
+        smtpPassword = config.getString("smtpPassword", null);
+        smtpUseStartTls = config.getBoolean("smtpUseStartTls", false);
+        smtpUseSsl = config.getBoolean("smtpUseSsl", false);
+        smtpSenderAddress = config.getString("smtpSenderAddress", null);
 
-        List<String> recipients = Arrays.asList(config.getStringArray("receiver"));
+        recipients = Arrays.asList(config.getStringArray("receiver"));
 
-        String messageSubject =  config.getString("messageSubject", null);
-        String messageBody =  config.getString("messageBody", null);;
+        messageSubject = config.getString("messageSubject", null);
+        messageBody = config.getString("messageBody", null);
+
+    }
+
+    @Override
+    public PluginGuiType getPluginGuiType() {
+        return PluginGuiType.NONE;
+    }
+
+    @Override
+    public String getPagePath() {
+        return null;
+    }
+
+    @Override
+    public PluginType getType() {
+        return PluginType.Step;
+    }
+
+    @Override
+    public String cancel() {
+        return "/uii" + returnPath;
+    }
+
+    @Override
+    public String finish() {
+        return "/uii" + returnPath;
+    }
+
+    @Override
+    public int getInterfaceVersion() {
+        return 0;
+    }
+
+    @Override
+    public HashMap<String, StepReturnValue> validate() {
+        return null;
+    }
+
+    @Override
+    public boolean execute() {
+        PluginReturnValue ret = run();
+        return ret != PluginReturnValue.ERROR;
+    }
+
+    @Override
+    public PluginReturnValue run() {
+
+        String subject = messageSubject;
+        String body = messageBody;
+        try {
+            Fileformat ff = process.readMetadataFile();
+            DigitalDocument dd = ff.getDigitalDocument();
+            VariableReplacer vr = new VariableReplacer(dd, process.getRegelsatz().getPreferences(), process, step);
+
+            subject = vr.replace(subject);
+            body = vr.replace(body);
+        } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e1) {
+            log.error(e1);
+        }
 
         Properties props = new Properties();
         if (smtpUseStartTls) {
@@ -124,9 +200,9 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
             // create mail
             MimeMultipart multipart = new MimeMultipart();
 
-            msg.setSubject(messageSubject);
+            msg.setSubject(subject);
             MimeBodyPart messageHtmlPart = new MimeBodyPart();
-            messageHtmlPart.setText(messageBody, "utf-8");
+            messageHtmlPart.setText(body, "utf-8");
             messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
             multipart.addBodyPart(messageHtmlPart);
 
@@ -141,54 +217,6 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
             log.error(e);
         }
 
-    }
-
-    @Override
-    public PluginGuiType getPluginGuiType() {
-        return PluginGuiType.NONE;
-        // return PluginGuiType.PART;
-        // return PluginGuiType.PART_AND_FULL;
-        // return PluginGuiType.NONE;
-    }
-
-    @Override
-    public String getPagePath() {
-        return null;
-    }
-
-    @Override
-    public PluginType getType() {
-        return PluginType.Step;
-    }
-
-    @Override
-    public String cancel() {
-        return "/uii" + returnPath;
-    }
-
-    @Override
-    public String finish() {
-        return "/uii" + returnPath;
-    }
-
-    @Override
-    public int getInterfaceVersion() {
-        return 0;
-    }
-
-    @Override
-    public HashMap<String, StepReturnValue> validate() {
-        return null;
-    }
-
-    @Override
-    public boolean execute() {
-        PluginReturnValue ret = run();
-        return ret != PluginReturnValue.ERROR;
-    }
-
-    @Override
-    public PluginReturnValue run() {
         boolean successful = true;
         // your logic goes here
 
