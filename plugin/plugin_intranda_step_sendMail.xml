@@ -1,21 +1,32 @@
 <config_plugin>
     <!--
         order of configuration is:
-          1.) project name and step name matches
-          2.) step name matches and project is *
-          3.) project name matches and step name is *
-          4.) project name and step name are *
-	-->
-    
+        1.) project name and step name matches
+        2.) step name matches and project is *
+        3.) project name matches and step name is *
+        4.) project name and step name are *
+    -->
     <config>
         <!-- which projects to use for (can be more then one, otherwise use *) -->
         <project>*</project>
         <step>*</step>
+        <!-- mail account -->
+        <smtpUser>test@example.com</smtpUser>
+        <smtpPassword>password</smtpPassword>
         
-        <!-- sample parameter -->
-        <value>test</value>
-        <!-- display button to finish the task directly from within the entered plugin -->
-        <allowTaskFinishButtons>true</allowTaskFinishButtons>
+        <!-- server configuration -->
+        <smtpServer>example.com</smtpServer>
+        <smtpUseStartTls>false</smtpUseStartTls>
+        <smtpUseSsl>true</smtpUseSsl>
+        
+        <!-- displayed sender address -->
+        <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
+        <!-- receiver, can be repeated -->
+        <receiver>user@example.com</receiver>
+        <receiver>second-user@example.com</receiver>
+        
+        <!-- message -->
+        <messageSubject>subject text</messageSubject>
+        <messageBody>body &lt;br /&gt; &lt;h1&gt;with html&lt;/h1&gt;</messageBody>
     </config>
-
 </config_plugin>
