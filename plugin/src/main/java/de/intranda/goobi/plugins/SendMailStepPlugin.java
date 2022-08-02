@@ -49,7 +49,6 @@ import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
 import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.VariableReplacer;
-import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -156,7 +155,7 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
             subject = vr.replace(subject);
             body = vr.replace(body);
-        } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e1) {
+        } catch (UGHException | IOException | SwapException e1) {
             log.error(e1);
         }
 
