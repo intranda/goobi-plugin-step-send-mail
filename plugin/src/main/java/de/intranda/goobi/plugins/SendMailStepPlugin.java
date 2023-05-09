@@ -1,9 +1,7 @@
 package de.intranda.goobi.plugins;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * This file is part of a plugin for Goobi - a Workflow tool for the support of mass digitization.
@@ -26,19 +24,9 @@ import java.util.Date;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginGuiType;
@@ -61,6 +49,8 @@ import ugh.exceptions.UGHException;
 @Log4j2
 public class SendMailStepPlugin implements IStepPluginVersion2 {
 
+    private static final long serialVersionUID = -2248755432954006453L;
+
     @Getter
     private String title = "intranda_step_sendMail";
     @Getter
@@ -69,12 +59,12 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
     private String returnPath;
 
-    private String smtpServer;
-    private String smtpUser;
-    private String smtpPassword;
-    private boolean smtpUseStartTls;
-    private boolean smtpUseSsl;
-    private String smtpSenderAddress;
+    //    private String smtpServer;
+    //    private String smtpUser;
+    //    private String smtpPassword;
+    //    private boolean smtpUseStartTls;
+    //    private boolean smtpUseSsl;
+    //    private String smtpSenderAddress;
     private List<String> recipients;
     private String messageSubject;
     private String messageBody;
@@ -88,13 +78,13 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
         // read parameters from correct block in configuration file
         SubnodeConfiguration config = ConfigPlugins.getProjectAndStepConfig(title, step);
 
-        smtpServer = config.getString("smtpServer", null);
-        smtpUser = config.getString("smtpUser", null);
-        smtpPassword = config.getString("smtpPassword", null);
-        smtpUseStartTls = config.getBoolean("smtpUseStartTls", false);
-        smtpUseSsl = config.getBoolean("smtpUseSsl", false);
-        smtpSenderAddress = config.getString("smtpSenderAddress", null);
-
+        //        smtpServer = config.getString("smtpServer", null);
+        //        smtpUser = config.getString("smtpUser", null);
+        //        smtpPassword = config.getString("smtpPassword", null);
+        //        smtpUseStartTls = config.getBoolean("smtpUseStartTls", false);
+        //        smtpUseSsl = config.getBoolean("smtpUseSsl", false);
+        //        smtpSenderAddress = config.getString("smtpSenderAddress", null);
+        //
         recipients = Arrays.asList(config.getStringArray("receiver"));
 
         messageSubject = config.getString("messageSubject", null);
@@ -159,70 +149,8 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
             log.error(e1);
         }
 
-        Properties props = new Properties();
-        if (smtpUseStartTls) {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "25");
-            props.setProperty("mail.smtp.host", smtpServer);
-            props.setProperty("mail.smtp.ssl.trust", "*");
-            props.setProperty("mail.smtp.starttls.enable", "true");
-            props.setProperty("mail.smtp.starttls.required", "true");
-        } else if (smtpUseSsl) {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.host", smtpServer);
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "465");
-            props.setProperty("mail.smtp.ssl.enable", "true");
-            props.setProperty("mail.smtp.ssl.trust", "*");
-        } else {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "25");
-            props.setProperty("mail.smtp.host", smtpServer);
-        }
-        List<Address> addresses = new ArrayList<>(recipients.size());
-        // create a mail for each user
-        try {
-            for (String receiver : recipients) {
-                Address address = new InternetAddress(receiver);
-                addresses.add(address);
-            }
-            Session session = Session.getDefaultInstance(props, null);
-            Message msg = new MimeMessage(session);
-
-            InternetAddress addressFrom = new InternetAddress(smtpSenderAddress);
-            msg.setFrom(addressFrom);
-            //        msg.setRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
-            msg.setRecipients(Message.RecipientType.TO, addresses.toArray(new Address[addresses.size()]));
-
-            // create mail
-            MimeMultipart multipart = new MimeMultipart();
-
-            msg.setSubject(subject);
-            MimeBodyPart messageHtmlPart = new MimeBodyPart();
-            messageHtmlPart.setText(body, "utf-8");
-            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
-            multipart.addBodyPart(messageHtmlPart);
-
-            msg.setContent(multipart);
-            msg.setSentDate(new Date());
-
-            Transport transport = session.getTransport();
-            transport.connect(smtpUser, smtpPassword);
-            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
-            transport.close();
-        } catch (MessagingException e) {
-            log.error(e);
-        }
-
-        boolean successful = true;
-        // your logic goes here
-
-        log.info("SendMail step plugin executed");
-        if (!successful) {
-            return PluginReturnValue.ERROR;
-        }
+        SendMail.getInstance().sendMailToUser(subject, body, recipients, false);
+        log.debug("SendMail step plugin executed");
         return PluginReturnValue.FINISH;
     }
 }
