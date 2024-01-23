@@ -17,5 +17,9 @@
         <!-- message -->
         <messageSubject>subject text</messageSubject>
         <messageBody>body &lt;br /&gt; &lt;h1&gt;with html&lt;/h1&gt;</messageBody>
+        
+        <!-- path to attachment, leave it empty to send mail without attached file -->
+        <attachment>{processpath}/ocr/{processtitle}_txt/00000001.txt</attachment>
+        
     </config>
 </config_plugin>

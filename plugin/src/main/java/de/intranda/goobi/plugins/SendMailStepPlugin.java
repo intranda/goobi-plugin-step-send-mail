@@ -1,6 +1,8 @@
 package de.intranda.goobi.plugins;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -59,15 +62,11 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
     private String returnPath;
 
-    //    private String smtpServer;
-    //    private String smtpUser;
-    //    private String smtpPassword;
-    //    private boolean smtpUseStartTls;
-    //    private boolean smtpUseSsl;
-    //    private String smtpSenderAddress;
+
     private List<String> recipients;
     private String messageSubject;
     private String messageBody;
+    private String pathToAttachment;
 
     @Override
     public void initialize(Step step, String returnPath) {
@@ -78,18 +77,12 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
         // read parameters from correct block in configuration file
         SubnodeConfiguration config = ConfigPlugins.getProjectAndStepConfig(title, step);
 
-        //        smtpServer = config.getString("smtpServer", null);
-        //        smtpUser = config.getString("smtpUser", null);
-        //        smtpPassword = config.getString("smtpPassword", null);
-        //        smtpUseStartTls = config.getBoolean("smtpUseStartTls", false);
-        //        smtpUseSsl = config.getBoolean("smtpUseSsl", false);
-        //        smtpSenderAddress = config.getString("smtpSenderAddress", null);
-        //
+
         recipients = Arrays.asList(config.getStringArray("receiver"));
 
         messageSubject = config.getString("messageSubject", null);
         messageBody = config.getString("messageBody", null);
-
+        pathToAttachment = config.getString("attachment", null);
     }
 
     @Override
@@ -138,6 +131,9 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
         String subject = messageSubject;
         String body = messageBody;
+        Path attachment = null;
+
+
         try {
             Fileformat ff = process.readMetadataFile();
             DigitalDocument dd = ff.getDigitalDocument();
@@ -145,11 +141,15 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
             subject = vr.replace(subject);
             body = vr.replace(body);
+            if (StringUtils.isNotBlank(pathToAttachment)) {
+                attachment = Paths.get(vr.replace(pathToAttachment));
+            }
+
         } catch (UGHException | IOException | SwapException e1) {
             log.error(e1);
         }
 
-        SendMail.getInstance().sendMailToUser(subject, body, recipients, false);
+        SendMail.getInstance().sendMailToUser(subject, body, recipients, false, attachment);
         log.debug("SendMail step plugin executed");
         return PluginReturnValue.FINISH;
     }
