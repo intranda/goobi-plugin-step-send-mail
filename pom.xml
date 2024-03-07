@@ -7,7 +7,7 @@
     <relativePath />
   </parent>
   <groupId>io.goobi.workflow.plugin</groupId>
-  <artifactId>plugin-step-sendMail</artifactId>
+  <artifactId>plugin-step-send-mail</artifactId>
   <packaging>pom</packaging>
   <modules>
     <module>module-base</module>
