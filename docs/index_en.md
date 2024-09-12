@@ -38,43 +38,11 @@ This plugin is integrated into the workflow in such a way that it is executed au
 
 
 ## Configuration
-The configuration of the plugin is done via the configuration file `plugin_intranda_step_sendMail.xml` and can be adjusted during operation. The following is an example configuration file:
+The plugin is configured in the file `plugin_intranda_step_sendMail.xml` as shown here:
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<config_plugin>
-    <!--
-        order of configuration is:
-        1.) project name and step name matches
-        2.) step name matches and project is *
-        3.) project name matches and step name is *
-        4.) project name and step name are *
-    -->
-    <config>
-        <!-- which projects to use for (can be more then one, otherwise use *) -->
-        <project>*</project>
-        <step>*</step>
-        <!-- mail account -->
-        <smtpUser>test@example.com</smtpUser>
-        <smtpPassword>password</smtpPassword>
+{{CONFIG_CONTENT}}
 
-        <!-- server configuration -->
-        <smtpServer>example.com</smtpServer>
-        <smtpUseStartTls>false</smtpUseStartTls>
-        <smtpUseSsl>true</smtpUseSsl>
-
-        <!-- displayed sender address -->
-        <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
-        <!-- receiver, can be repeated -->
-        <receiver>user@example.com</receiver>
-        <receiver>second-user@example.com</receiver>
-
-        <!-- message -->
-        <messageSubject>subject text</messageSubject>
-        <messageBody>body &lt;br /&gt; &lt;h1&gt;with html&lt;/h1&gt;</messageBody>
-    </config>
-</config_plugin>
-```
+{{CONFIG_DESCRIPTION_PROJECT_STEP}}
 
 | Parameter | Explanation |
 | :--- | :--- |
