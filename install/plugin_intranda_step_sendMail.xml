@@ -11,18 +11,6 @@
         <project>*</project>
         <step>*</step>
         
-        <!-- mail account -->
-        <smtpUser>test@example.com</smtpUser>
-        <smtpPassword>password</smtpPassword>
-
-        <!-- server configuration -->
-        <smtpServer>example.com</smtpServer>
-        <smtpUseStartTls>false</smtpUseStartTls>
-        <smtpUseSsl>true</smtpUseSsl>
-
-        <!-- displayed sender address -->
-        <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
-
         <!-- receiver, can be repeated -->
         <receiver>user@example.com</receiver>
         <receiver>second-user@example.com</receiver>
