@@ -47,12 +47,8 @@ Die Konfiguration des Plugins erfolgt in der Datei `plugin_intranda_step_sendMai
 | :--- | :--- |
 | `project` | Dieser Parameter legt fest, für welches Projekt der aktuelle Block `<config>` gelten soll. Verwendet wird hierbei der Name des Projektes. Dieser Parameter kann mehrfach pro `<config>` Block vorkommen. |
 | `step` | Dieser Parameter steuert, für welche Arbeitsschritte der Block `<config>` gelten soll. Verwendet wird hier der Name des Arbeitsschritts. Dieser Parameter kann mehrfach pro `<config>` Block vorkommen. |
-| `<smtpServer>` | Dieser Parameter legt den SMTP-Server fest. |
-| `<smtpUseStartTls>` | Mit diesem Parameter wird gesteuert, ob der Zugriff wie TLS laufen soll. |
-| `<smtpUseSsl>` | Hiermit wird festgelegt, ob die Kommunikation via SSL verschlüsselt sein soll. |
-| `<smtpUser>` | Dieser Parameter legt den Nutzernamen fest. |
-| `<smtpPassword>` | Hiermit wird das zu verwendende Passwort definiert. |
-| `<smtpSenderAddress>` | Das Feld `<smtpSenderAddress>` definiert den angezeigten Absender, der sich auch vom Nutzernamen unterscheiden kann. |
-| `<receiver>` | Das Feld `<receiver>` kann mehrfach genutzt werden und enthält die Email-Adressen der Empfänger. |
+| `<receiver>` | Das Feld `<receiver>` kann mehrfach genutzt werden und enthält die E-Mail-Adressen der Empfänger. Eine Verwendung von Variablen ist hier möglich. |
 | `<messageSubject>` | Dieser Parameter erlaubt die Festlegung des Subjects. Eine Verwendung von Variablen ist hier möglich. |
 | `<messageBody>` | In `<messageBody>` wird die Mail selbst definiert. Hier kann PlainText oder auch ein HTML formatierter Text geschrieben werden. Zusätzlich ist hier der Zugriff auf das Variablensystem von Goobi möglich, damit können auch Informationen zum Vorgang, Projekt, Eigenschaften oder Metadaten in der Mail genutzt werden. |
+
+**Achtung:** Das Plugin erwartet, dass die Mail-Konfiguration innerhalb der globalen Goobi-Konfigurationsdatei `goobi_mail.xml` korrekt konfiguriert ist. Andernfalls erfolgt kein Mailversand. 
