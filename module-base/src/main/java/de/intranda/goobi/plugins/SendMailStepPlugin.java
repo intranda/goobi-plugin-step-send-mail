@@ -3,6 +3,7 @@ package de.intranda.goobi.plugins;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -62,7 +63,6 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
     private String returnPath;
 
-
     private List<String> recipients;
     private String messageSubject;
     private String messageBody;
@@ -76,7 +76,6 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
         // read parameters from correct block in configuration file
         SubnodeConfiguration config = ConfigPlugins.getProjectAndStepConfig(title, step);
-
 
         recipients = Arrays.asList(config.getStringArray("receiver"));
 
@@ -131,8 +130,8 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
         String subject = messageSubject;
         String body = messageBody;
+        List<String> recipientsReplaced = new ArrayList<String>();
         Path attachment = null;
-
 
         try {
             Fileformat ff = process.readMetadataFile();
@@ -141,6 +140,10 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
 
             subject = vr.replace(subject);
             body = vr.replace(body);
+            for (String rec : recipients) {
+                recipientsReplaced.add(vr.replace(rec));
+            }
+
             if (StringUtils.isNotBlank(pathToAttachment)) {
                 attachment = Paths.get(vr.replace(pathToAttachment));
             }
@@ -149,7 +152,7 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
             log.error(e1);
         }
 
-        SendMail.getInstance().sendMailToUser(subject, body, recipients, false, attachment);
+        SendMail.getInstance().sendMailToUser(subject, body, recipientsReplaced, false, attachment);
         log.debug("SendMail step plugin executed");
         return PluginReturnValue.FINISH;
     }
