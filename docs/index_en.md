@@ -46,14 +46,9 @@ The plugin is configured in the file `plugin_intranda_step_sendMail.xml` as show
 
 | Parameter | Explanation |
 | :--- | :--- |
-| `project` | This parameter determines for which project the current block `<config>` should apply. The name of the project is used here. This parameter can occur several times per `<config>` block. |
-| `step` | This parameter controls for which workflow steps the block `<config>` should apply. The name of the workflow step is used here. This parameter can occur several times per `<config>` block. |
-| `<smtpServer>` | This parameter sets the SMTP server. |
-| `<smtpUseStartTls>` | This parameter controls whether the access should run like TLS. |
-| `<smtpUseSsl>` | This sets whether communication should be encrypted via SSL. |
-| `<smtpUser>` | Dieser Parameter legt den Nutzernamen fest. |
-| `<smtpPassword>` | This defines the password to be used. |
-| `<smtpSenderAddress>` | The field `<smtpSenderAddress>` defines the displayed sender, which can also be different from the user name. |
-| `<receiver>` | The field `<receiver>` can be used multiple times and contains the email addresses of the recipients. |
+| `<receiver>` | The field `<receiver>` can be used multiple times and contains the email addresses of the recipients. The use of variables is possible here. |
 | `<messageSubject>` | This parameter allows the subject to be defined. The use of variables is possible here. |
 | `<messageBody>` | In `<messageBody>` the mail itself is defined. Plain text or HTML formatted text can be written here. In addition, access to the Goobi variable system is possible here, so that information on the task, project, properties or metadata can also be used in the mail. |
+| `<attachment>` | The field `<attachment>` allows to define a path to a file that shall be attached to the mail. The use of variables is possible here.  |
+
+**Attention:** The plugin expects the mail configuration within the global Goobi configuration file `goobi_mail.xml` to be configured correctly. Otherwise no mail will be sent. 
