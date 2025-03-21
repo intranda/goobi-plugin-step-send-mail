@@ -52,7 +52,7 @@ Die Konfiguration des Plugins erfolgt über die Konfigurationsdatei `plugin_intr
 | `<smtpUser>` | Dieser Parameter legt den Nutzernamen fest. |
 | `<smtpPassword>` | Hiermit wird das zu verwendende Passwort definiert. |
 | `<smtpSenderAddress>` | Das Feld `<smtpSenderAddress>` definiert den angezeigten Absender, der sich auch vom Nutzernamen unterscheiden kann. |
-| `<receiver>` | Das Feld `<receiver>` kann mehrfach genutzt werden und enthält die Email-Adressen der Empfänger. |
+| `<receiver>` | Das Feld `<receiver>` kann mehrfach genutzt werden und enthält die Email-Adressen der Empfänger. Eine Verwendung von Variablen ist hier möglich. ||
 | `<messageSubject>` | Dieser Parameter erlaubt die Festlegung des Subjects. Eine Verwendung von Variablen ist hier möglich. |
 | `<messageBody>` | In `<messageBody>` wird die Mail selbst definiert. Hier kann PlainText oder auch ein HTML formatierter Text geschrieben werden. Zusätzlich ist hier der Zugriff auf das Variablensystem von Goobi möglich, damit können auch Informationen zum Vorgang, Projekt, Eigenschaften oder Metadaten in der Mail genutzt werden. |
 | `<attachment>` | In `<attachment>` kann der Pfad zu einer Datei angegeben werden, die als Anhang mit der Mail versendet werden soll. Innerhalb der Pfadangabe können Variablen verwendet werden. |
