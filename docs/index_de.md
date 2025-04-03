@@ -38,54 +38,22 @@ Dieses Plugin wird in den Workflow so integriert, dass es automatisch ausgeführ
 
 
 ## Konfiguration
-Die Konfiguration des Plugins erfolgt über die Konfigurationsdatei `plugin_intranda_step_sendMail.xml` und kann im laufenden Betrieb angepasst werden. Im folgenden ist eine beispielhafte Konfigurationsdatei aufgeführt:
+Die Konfiguration des Plugins erfolgt über die Konfigurationsdatei `plugin_intranda_step_sendMail.xml` und kann im laufenden Betrieb angepasst werden:
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<config_plugin>
-    <!--
-        order of configuration is:
-        1.) project name and step name matches
-        2.) step name matches and project is *
-        3.) project name matches and step name is *
-        4.) project name and step name are *
-    -->
-    <config>
-        <!-- which projects to use for (can be more then one, otherwise use *) -->
-        <project>*</project>
-        <step>*</step>
-        <!-- mail account -->
-        <smtpUser>test@example.com</smtpUser>
-        <smtpPassword>password</smtpPassword>
+{{CONFIG_CONTENT}}
 
-        <!-- server configuration -->
-        <smtpServer>example.com</smtpServer>
-        <smtpUseStartTls>false</smtpUseStartTls>
-        <smtpUseSsl>true</smtpUseSsl>
-
-        <!-- displayed sender address -->
-        <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
-        <!-- receiver, can be repeated -->
-        <receiver>user@example.com</receiver>
-        <receiver>second-user@example.com</receiver>
-
-        <!-- message -->
-        <messageSubject>subject text</messageSubject>
-        <messageBody>body &lt;br /&gt; &lt;h1&gt;with html&lt;/h1&gt;</messageBody>
-    </config>
-</config_plugin>
-```
+{{CONFIG_DESCRIPTION_PROJECT_STEP}}
 
 | Parameter | Erläuterung |
 | :--- | :--- |
-| `project` | Dieser Parameter legt fest, für welches Projekt der aktuelle Block `<config>` gelten soll. Verwendet wird hierbei der Name des Projektes. Dieser Parameter kann mehrfach pro `<config>` Block vorkommen. |
-| `step` | Dieser Parameter steuert, für welche Arbeitsschritte der Block `<config>` gelten soll. Verwendet wird hier der Name des Arbeitsschritts. Dieser Parameter kann mehrfach pro `<config>` Block vorkommen. |
 | `<smtpServer>` | Dieser Parameter legt den SMTP-Server fest. |
 | `<smtpUseStartTls>` | Mit diesem Parameter wird gesteuert, ob der Zugriff wie TLS laufen soll. |
 | `<smtpUseSsl>` | Hiermit wird festgelegt, ob die Kommunikation via SSL verschlüsselt sein soll. |
 | `<smtpUser>` | Dieser Parameter legt den Nutzernamen fest. |
 | `<smtpPassword>` | Hiermit wird das zu verwendende Passwort definiert. |
 | `<smtpSenderAddress>` | Das Feld `<smtpSenderAddress>` definiert den angezeigten Absender, der sich auch vom Nutzernamen unterscheiden kann. |
-| `<receiver>` | Das Feld `<receiver>` kann mehrfach genutzt werden und enthält die Email-Adressen der Empfänger. |
+| `<receiver>` | Das Feld `<receiver>` kann mehrfach genutzt werden und enthält die Email-Adressen der Empfänger. Eine Verwendung von Variablen ist hier möglich. ||
 | `<messageSubject>` | Dieser Parameter erlaubt die Festlegung des Subjects. Eine Verwendung von Variablen ist hier möglich. |
 | `<messageBody>` | In `<messageBody>` wird die Mail selbst definiert. Hier kann PlainText oder auch ein HTML formatierter Text geschrieben werden. Zusätzlich ist hier der Zugriff auf das Variablensystem von Goobi möglich, damit können auch Informationen zum Vorgang, Projekt, Eigenschaften oder Metadaten in der Mail genutzt werden. |
+| `<attachment>` | In `<attachment>` kann der Pfad zu einer Datei angegeben werden, die als Anhang mit der Mail versendet werden soll. Innerhalb der Pfadangabe können Variablen verwendet werden. |
+
