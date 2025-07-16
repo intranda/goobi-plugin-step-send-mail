@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.SwapException;
 import jakarta.faces.context.ExternalContext;
@@ -37,7 +38,7 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConfigPlugins.class, SendMail.class})
+@PrepareForTest({ ConfigurationHelper.class, ConfigPlugins.class, SendMail.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" ,"jdk.internal.reflect.*"})
 public class SendMailPluginTest {
     private static String resourcesFolder;
@@ -120,6 +121,17 @@ public class SendMailPluginTest {
         PowerMock.mockStatic(ConfigPlugins.class);
         EasyMock.expect(ConfigPlugins.getProjectAndStepConfig("intranda_step_sendMail", step)).andReturn(config).anyTimes();
         PowerMock.replay(ConfigPlugins.class);
+
+        ConfigurationHelper configurationHelper = EasyMock.createMock(ConfigurationHelper.class);
+        EasyMock.expect(configurationHelper.getGoobiFolder()).andReturn("/opt/digiverso/goobi").anyTimes();
+        EasyMock.expect(configurationHelper.getRulesetFolder()).andReturn("rulesets").anyTimes();
+        EasyMock.expect(configurationHelper.getScriptsFolder()).andReturn("scripts").anyTimes();
+        EasyMock.expect(configurationHelper.getConfigurationFolder()).andReturn("config").anyTimes();
+        EasyMock.replay(configurationHelper);
+
+        PowerMock.mockStatic(ConfigurationHelper.class);
+        EasyMock.expect(ConfigurationHelper.getInstance()).andReturn(configurationHelper).anyTimes();
+        PowerMock.replay(ConfigurationHelper.class);
     }
 
     @Test
