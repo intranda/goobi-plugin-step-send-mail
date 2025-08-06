@@ -141,7 +141,7 @@ public class SendMailStepPlugin implements IStepPluginVersion2 {
             subject = vr.replace(subject);
             body = vr.replace(body);
             for (String rec : recipients) {
-                recipientsReplaced.add(vr.replace(rec));
+                recipientsReplaced.addAll(Arrays.asList(vr.replace(rec).split(vr.getSeparator())));
             }
 
             if (StringUtils.isNotBlank(pathToAttachment)) {
