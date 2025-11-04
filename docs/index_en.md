@@ -3,6 +3,10 @@ title: Sending emails
 identifier: intranda_step_sendMail
 published: true
 description: Goobi Step Plugin for sending emails within a task.
+keywords:
+    - Goobi workflow
+    - Plugin
+    - Step Plugin
 ---
 ## Introduction
 This documentation describes the installation, configuration and use of the Step Plugin for sending emails within a task in Goobi workflow. The list of recipients and the text can be configured individually for different steps. All fields from the VariableReplacer are also available. This means that metadata or information on the task, step or project can also be accessed.

@@ -3,6 +3,10 @@ title: Versenden von E-Mails
 identifier: intranda_step_sendMail
 published: true
 description: Goobi Step Plugin für das Versenden von E-Mails innerhalb einer Aufgabe.
+keywords:
+    - Goobi workflow
+    - Plugin
+    - Step Plugin
 ---
 ## Einführung
 Die vorliegende Dokumentation beschreibt die Installation, die Konfiguration und den Einsatz des Step Plugins für versenden von Mails innerhalb einer Aufgabe in Goobi workflow. Die Liste der Empfänger und der Text lassen sich für verschiedene Arbeitsschritte individuell konfigurieren. Dabei stehen auch alle Felder aus dem VariablenReplacer zur Verfügung. Somit kann auch auf Metadaten oder Informationen zum Vorgang, Schritt oder Projekt zurückgegriffen werden.
